@@ -37,3 +37,15 @@ npm run build
 Each model file's comment header restates the **domain rules** that part of the
 code is supposed to follow. Compare the code against those rules. See the
 assignment handout for exactly what to write up and hand in.
+
+## Assignment
+
+**Name: Nicholas Turner**  
+Date: 10/8/2026
+
+### Writeup
+Issues:
+- Can deposit a negative amount
+    - Results in no overdraft charge
+- Withdrawing more than your overdraft limit is fine
+- No checks on interest rate
