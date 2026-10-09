@@ -23,14 +23,17 @@ export class CheckingAccount extends Account {
     this.overdraftLimit = overdraftLimit;
   }
 
-  withdrawl(amount: number): void {
-    if (amount > this.balance + this.overdraftLimit) {
+  override withdraw(amount: number): void {
+    if (!Number.isFinite(amount) || amount <= 0) {
+      throw new RangeError("Withdrawal amount must be positive.");
+    }
+    if (amount > this._balance + this.overdraftLimit) {
       throw new Error(
         `Overdraft limit exceeded: cannot withdraw $${amount.toFixed(2)} ` +
           `(balance $${this.balance.toFixed(2)}, overdraft $${this.overdraftLimit.toFixed(2)}).`
       );
     }
-    this.balance -= amount;
+    this._balance -= amount;
     this._history.push(`Withdrawal: -$${amount.toFixed(2)}`);
   }
 

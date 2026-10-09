@@ -8,7 +8,7 @@ import { Account } from "./account";
  * an error the class should reject.
  */
 export class SavingsAccount extends Account {
-  public interestRate: number;
+  private _interestRate: number = 0;
 
   constructor(
     accountNumber: string,
@@ -16,13 +16,24 @@ export class SavingsAccount extends Account {
     initialBalance: number,
     interestRate: number
   ) {
-    super(accountNumber, holderName);
+    super(accountNumber, holderName, initialBalance);
     this.interestRate = interestRate;
+  }
+
+  get interestRate(): number {
+    return this._interestRate;
+  }
+
+  set interestRate(rate: number) {
+    if (!Number.isFinite(rate) || rate < 0 || rate > 0.25) {
+      throw new RangeError("Interest rate must be between 0 and 0.25.");
+    }
+    this._interestRate = rate;
   }
 
   applyInterest(): void {
     const interest = this.balance * this.interestRate;
-    this.balance += interest;
+    this._balance += interest;
     this._history.push(`Interest applied: +$${interest.toFixed(2)}`);
   }
 

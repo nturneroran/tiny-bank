@@ -39,6 +39,9 @@ export class Bank {
    *     directly.
    */
   transfer(fromNumber: string, toNumber: string, amount: number): void {
-    throw new Error("transfer() is not implemented yet — see Task 3.");
+    const from = this.getAccount(fromNumber);
+    const to = this.getAccount(toNumber);
+    from.withdraw(amount);
+    to.deposit(amount);
   }
 }

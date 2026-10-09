@@ -11,11 +11,11 @@
  * Read the code carefully and compare it against those rules.
  */
 export abstract class Account {
-  public accountNumber: string;
+  public readonly accountNumber: string;
 
   private readonly _holderName: string;
 
-  public balance: number;
+  protected _balance: number;
 
   protected readonly _history: string[] = [];
 
@@ -25,8 +25,12 @@ export abstract class Account {
     }
     this.accountNumber = accountNumber;
     this._holderName = holderName;
-    this.balance = initialBalance;
+    this._balance = initialBalance;
     this._history.push(`Opened with $${initialBalance.toFixed(2)}`);
+  }
+
+  get balance(): number {
+    return this._balance;
   }
 
   get holderName(): string {
@@ -37,18 +41,26 @@ export abstract class Account {
     return this._history;
   }
 
-  deposit(amount: number): void {
-    this.balance += amount;
-    this._history.push(`Deposit: +$${amount.toFixed(2)}`);
-  }
+  deposit(amount: number): void;
 
-  deposit(amount: number, memo: string): void {
-    this.balance += amount;
-    this._history.push(`${memo}: +$${amount.toFixed(2)}`);
+  deposit(amount: number, memo: string): void;
+
+  deposit(amount: number, memo?: string): void {
+    if (!Number.isFinite(amount) || amount <= 0) {
+      throw new RangeError("Deposit amount must be positive.");
+    }
+    this._balance += amount;
+    this._history.push(`${memo ?? "Deposit"}: +$${amount.toFixed(2)}`);
   }
 
   withdraw(amount: number): void {
-    this.balance -= amount;
+    if (!Number.isFinite(amount) || amount <= 0) {
+      throw new RangeError("Withdrawal amount must be positive.");
+    }
+    if (amount > this._balance) {
+      throw new Error("Insufficient funds.");
+    }
+    this._balance -= amount;
     this._history.push(`Withdrawal: -$${amount.toFixed(2)}`);
   }
 
